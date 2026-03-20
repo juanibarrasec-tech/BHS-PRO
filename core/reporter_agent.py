@@ -3,11 +3,11 @@ import os
 from datetime import datetime
 
 class ReporterAgent:
-    def __init__(self):
+  def __init__(self):
             self.bus_path = "data/json_bus/"
                     os.makedirs(self.bus_path, exist_ok=True)
 
-                        def create_mission(self, agent_name, target, task):
+   def create_mission(self, agent_name, target, task):
                                 mission = {
                                             "id": datetime.now().strftime("%Y%m%d%H%M"),
                                                         "target": target,
