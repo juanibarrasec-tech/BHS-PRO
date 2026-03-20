@@ -5,7 +5,7 @@ from datetime import datetime
 class ReporterAgent:
     def __init__(self):
             self.bus_path = "data/json_bus/"
-            os.makedirs(self.bus_path, exist_ok=True)
+                    os.makedirs(self.bus_path, exist_ok=True)
 
                         def create_mission(self, agent_name, target, task):
                                 mission = {
