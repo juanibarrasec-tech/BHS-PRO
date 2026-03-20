@@ -43,8 +43,7 @@ from core.scope_validator import is_in_scope
 
 def run_nmap_scan(self, target):
     if not is_in_scope(target):
-            print(f"⚠️ BLOQUEADO: {target} está fuera de Scope!")
-                    return "Fuera de alcance"
+        print(f"⚠️ BLOQUEADO: {target} está fuera de Scope!")
+        return "Fuera de alcance"  # <--- Esta línea debe estar alineada aquí
 
-                            # ... resto del código de nmap
                             
