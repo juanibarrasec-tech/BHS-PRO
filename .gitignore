@@ -1,0 +1,33 @@
+<<<<<<< HEAD
+# --- Seguridad y Privacidad ---
+=======
+>>>>>>> ef451ef (🚀 BHS-PRO: Evolución inicial - IA Local y JSON Bus)
+.env
+data/*.db
+data/json_bus/*.json
+logs/*.log
+reports/*.md
+<<<<<<< HEAD
+evidence/
+*.pdf
+*.png
+
+# --- Entorno de Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
+env/
+build/
+dist/
+
+# --- Herramientas y OS ---
+.DS_Store
+.idea/
+.vscode/
+.streamlit/config.toml (si contiene credenciales)
+=======
+__pycache__/
+venv/
+>>>>>>> ef451ef (🚀 BHS-PRO: Evolución inicial - IA Local y JSON Bus)

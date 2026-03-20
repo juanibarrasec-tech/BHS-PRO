@@ -1,0 +1,8 @@
+langchain
+langchain-community
+langchain-ollama
+streamlit
+requests
+pandas
+python-dotenv
+pysocks
