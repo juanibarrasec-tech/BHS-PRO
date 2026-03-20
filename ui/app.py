@@ -1,17 +1,26 @@
 import streamlit as st
+import os
+from core.reporter_agent import ReporterAgent
 
-st.set_page_config(page_title="BHS-PRO", layout="wide")
+# Configuración de la página (Modo Oscuro forzado)
+st.set_page_config(page_title="BHS-PRO Control", page_icon="😈", layout="centered")
 
-# Estilo Oscuro Forzado
-st.markdown("""
-    <style>
-        .stApp { background-color: #0e1117; color: #00ff41; }
-            input { background-color: #161b22 !important; color: #00ff41 !important; }
-                </style>
-                    """, unsafe_allow_html=True)
+st.title("😈 BHS-PRO: Squad Control")
+st.markdown("---")
 
-                    st.title("🛡️ BugHunter Squad PRO")
-                    target = st.text_input("Objetivo:", "example.com")
-                    if st.button("Lanzar Squad"):
-                        st.write(f"Iniciando misión para {target}...")
-                        
+target = st.text_input("🎯 Objetivo (IP o Dominio):", placeholder="ejemplo.com")
+task = st.selectbox("🛠️ Misión:", ["Reconocimiento (Nmap)", "Escaneo de Vulnerabilidades", "Análisis IA"])
+
+if st.button("🚀 Lanzar Squad"):
+    if target:
+        reporter = ReporterAgent()
+        mission = reporter.create_mission("recon", target, task)
+        st.success(f"✅ Misión enviada al Bus: {target}")
+        st.info("Revisa la terminal del Orquestador para ver el progreso.")
+    else:
+        st.error("⚠️ Por favor, ingresa un objetivo.")
+
+st.sidebar.markdown("### 📊 Estado de la Squad")
+st.sidebar.write("Orquestador: 🟢 Online")
+st.sidebar.write("Agente Recon: 🟢 Listo")
+
