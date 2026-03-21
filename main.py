@@ -1,40 +1,64 @@
-import time
 import os
+import time
+import json
 from core.recon_agent import ReconAgent
 from core.reporter_agent import ReporterAgent
+from core.analysis_agent import AnalysisAgent
+from core.final_report_agent import FinalReportAgent
+from core.comm_agent import CommAgent
 
 def main():
-    print("🛡️  BHS-PRO: Orquestador Multi-Agente Iniciado")
-    print("[*] Monitoreando JSON Bus para nuevas misiones...")
+    print("🛡️ BHS-PRO: Orquestador Multi-Agente Iniciado")
+    print("[*] Vigilando el Bus de Datos... (Presiona Ctrl+C para salir)")
     
+    # Inicializar agentes
     recon = ReconAgent()
     reporter = ReporterAgent()
+    analyzer = AnalysisAgent(model="llama3:8b") # Asegúrate que este sea tu modelo de Ollama
+    final_report = FinalReportAgent()
+    notifier = CommAgent()
+
+    bus_path = "data/json_bus/"
 
     while True:
-        # 1. El Agente de Recon revisa si hay misiones de escaneo
-        mission = recon.read_mission()
-        
-        if mission:
-            target = mission.get('target')
-            print(f"\n[!] Misión Detectada: Escaneando {target}")
+        # 1. Buscar misiones de Reconocimiento
+        if os.path.exists(f"{bus_path}recon_mission.json"):
+            with open(f"{bus_path}recon_mission.json", "r") as f:
+                mission = json.load(f)
             
-            # Ejecutar el escaneo
-            result = recon.run_nmap_scan(target)
+            target = mission['target']
+            print(f"\n[!] Nueva Misión Detectada: Recon sobre {target}")
             
-            # 2. El Agente de Reporte procesa el resultado y limpia el Bus
-            print(f"[+] Recon completado para {target}. Generando log...")
+            # Ejecutar Nmap
+            recon_results = recon.run_nmap_scan(target)
+            print(f"[✔] Reconocimiento completado.")
             
-            # Borrar la misión para que no se repita en el siguiente ciclo
-            mission_file = "data/json_bus/recon_mission.json"
-            if os.path.exists(mission_file):
-                os.remove(mission_file)
-                print(f"[*] Bus Limpio. Esperando nueva misión...")
-        
-        # Pausa para no saturar el CPU de Termux
-        time.sleep(10)
+            # Borrar misión procesada
+            os.remove(f"{bus_path}recon_mission.json")
+
+        # 2. Buscar misiones de Análisis IA
+        if os.path.exists(f"{bus_path}analysis_mission.json"):
+            print("[!] Iniciando Fase de Inteligencia con Ollama...")
+            
+            # Leer datos de Nmap y pedir consejo a la IA
+            raw_data = analyzer.read_last_recon()
+            advice = analyzer.get_ai_advice(raw_data)
+            
+            print(f"\n[IA]: {advice[:200]}...") # Mostrar resumen en terminal
+
+            # 3. Generar Reporte Profesional (.md)
+            report_path = final_report.generate_markdown(target, advice)
+            print(f"[✔] Reporte guardado en: {report_path}")
+
+            # 4. Alerta Crítica (Discord/Ntfy)
+            keywords = ["CRÍTICO", "VULNERABILIDAD", "EXPLOTABLE", "RCE", "SQL", "XSS"]
+            if any(k in advice.upper() for k in keywords):
+                notifier.send_alert(target, advice)
+
+            # Borrar misión procesada
+            os.remove(f"{bus_path}analysis_mission.json")
+
+        time.sleep(2) # Evitar saturar el CPU de tu móvil
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("\n[!] Orquestador detenido por el usuario.")
+    main()
