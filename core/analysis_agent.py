@@ -3,10 +3,10 @@ import os
 import ollama
 
 class AnalysisAgent:
-    def __init__(self, model="llama3:8b"):
-            self.log_path = "logs/recon_results.log"
-                    self.bus_path = "data/json_bus/"
-                            self.model = model
+   def __init__(self, model="llama3:8b"):
+     self.log_path = "logs/recon_results.log"
+     self.bus_path="data/json_bus/"
+     self.model=model
 
                                 def read_last_recon(self):
                                         """Extrae los hallazgos del log de Nmap."""
